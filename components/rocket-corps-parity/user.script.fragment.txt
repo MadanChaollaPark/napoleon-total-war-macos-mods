@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: rockets
+mod "WW0_Rocket_Corps_Parity.pack";
+# END NTW-MACOS-MODS: rockets
+
