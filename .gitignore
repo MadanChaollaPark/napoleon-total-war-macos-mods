@@ -1,4 +1,6 @@
 .DS_Store
+__pycache__/
+*.py[cod]
 *.save
 *.rar
 *.7z
@@ -12,4 +14,3 @@ WW0_ui.pack
 WW0_text_*.pack
 data.pack
 patch*.pack
-
