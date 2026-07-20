@@ -1,0 +1,15 @@
+.DS_Store
+*.save
+*.rar
+*.7z
+*.zip
+backups/
+original/
+startpos.esf
+Radious_CampaignAI.pack
+WW0_battle.pack
+WW0_ui.pack
+WW0_text_*.pack
+data.pack
+patch*.pack
+
