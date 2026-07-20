@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: minor-naval
+mod "WW0_Minor_Naval_Parity_Fix.pack";
+# END NTW-MACOS-MODS: minor-naval
+
