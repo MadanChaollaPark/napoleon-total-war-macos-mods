@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: ottoman-naval-parity
+mod "WW0_Ottoman_Naval_Parity.pack";
+# END NTW-MACOS-MODS: ottoman-naval-parity
+
