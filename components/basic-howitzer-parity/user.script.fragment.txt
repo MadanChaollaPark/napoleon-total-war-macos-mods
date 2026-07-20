@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: basic-howitzers
+mod "WW0_Basic_Howitzer_Parity.pack";
+# END NTW-MACOS-MODS: basic-howitzers
+
