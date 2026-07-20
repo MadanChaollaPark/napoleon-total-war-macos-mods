@@ -1,0 +1,26 @@
+# BEGIN NTW-MACOS-MODS: all-factions-unlocker
+unlock_faction faction_spain;
+unlock_faction faction_ottomans;
+unlock_faction faction_denmark;
+unlock_faction faction_sweden;
+unlock_faction faction_portugal;
+unlock_faction faction_poland_lithuania;
+unlock_faction faction_naples;
+unlock_faction faction_ita_papal_states;
+unlock_faction faction_saxony;
+unlock_faction faction_bavaria;
+unlock_faction faction_wurttemberg;
+unlock_faction faction_westphalia;
+unlock_faction faction_piedmont_savoy;
+unlock_faction faction_sicily;
+unlock_faction faction_hessen;
+unlock_faction faction_mecklenburg;
+unlock_faction faction_oldenburg;
+unlock_faction faction_italy_kingdom;
+unlock_faction faction_hannover;
+unlock_faction faction_netherlands;
+unlock_faction faction_united_netherlands;
+unlock_faction faction_belgium;
+unlock_faction faction_swiss_confederation;
+# END NTW-MACOS-MODS: all-factions-unlocker
+
