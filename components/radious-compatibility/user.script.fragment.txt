@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: optional-radious-compatibility
+mod "Radious_CampaignAI.pack";
+# END NTW-MACOS-MODS: optional-radious-compatibility
+
