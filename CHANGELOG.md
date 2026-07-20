@@ -2,6 +2,8 @@
 
 ## 1.1.0 - 2026-07-20
 
+- Added university-tier chances for newly generated minister candidates to gain
+  a visible +1 Management trait.
 - Repaired Spain's national steam-drydock recruitment and technology chain.
 - Added researched late-ship permissions for special-roster playable factions.
 - Added ordinary Howitzers for Spain, Portugal, Switzerland and Crimea.

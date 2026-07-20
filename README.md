@@ -1,8 +1,8 @@
 # Napoleon: Total War macOS Mods
 
-Modular, reversible fixes for the Feral macOS release of Napoleon: Total War,
-focused on completing research, unit, ship and agent behavior for factions made
-playable by World War zerO.
+Modular, reversible fixes and optional gameplay components for the Feral macOS
+release of Napoleon: Total War, focused on completing research, unit, ship and
+agent behavior for factions made playable by World War zerO.
 
 ## Included components
 
@@ -11,6 +11,7 @@ playable by World War zerO.
 | [All-factions unlocker](components/all-factions-unlocker/) | Adds 23 optional faction keys to `user.script.txt` | Yes |
 | [Ottoman naval parity](components/ottoman-naval-parity/) | Enables five researched late-game Ottoman ships, including Ironclads | Yes |
 | [Middle Eastern agent parity](components/middle-eastern-agent-parity/) | Mirrors normal building/research benefits to Eastern Scholars and Assassins | Yes |
+| [University minister candidates](components/university-minister-candidates/) | Gives newly generated candidates a tier-scaled chance of +1 Management | Yes |
 | [WW0 agent-cap startpos](components/ww0-agent-cap-startpos/) | Corrects Ottoman, Crimean and three Italian base-cap records for new campaigns | Yes |
 | [Minor naval parity](components/minor-naval-parity/) | Repairs special-roster late ships and Spain's steam drydock | Yes |
 | [Basic Howitzer parity](components/basic-howitzer-parity/) | Gives Spain, Portugal, Switzerland and Crimea an ordinary Howitzer | Yes |
@@ -32,6 +33,10 @@ validated correction was produced.
 
 If Radious is already installed from its [official ModDB download](https://www.moddb.com/games/napoleon-total-war/downloads/radious-campaign-ai),
 use `INSTALL_ALL_WITH_RADIOUS.command` instead.
+
+The university minister component is an optional gameplay change and is not
+enabled by either complete-suite command. Install it separately with
+`components/university-minister-candidates/INSTALL.command`.
 
 Run `STATUS.command` for a read-only report. Run `ROLLBACK_LAST.command` to
 restore the exact pre-install script, packs, and startpos from checksummed
@@ -58,6 +63,8 @@ and [compatibility matrix](docs/COMPATIBILITY.md).
   load with an existing save, but the complete correction requires a new campaign.
 - New parity units reuse verified game models and faction-owned artillery
   uniforms; no external unit asset pack is required.
+- The university component affects only candidates generated after the pack is
+  loaded; politicians already in a save's candidate pool are unchanged.
 - This is an unofficial fan project. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Verification

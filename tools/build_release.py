@@ -36,6 +36,11 @@ ARCHIVES = {
         "components/middle-eastern-agent-parity",
         "installers/macos",
     ),
+    "NTW-University-Minister-Candidates": SHARED
+    + (
+        "components/university-minister-candidates",
+        "installers/macos",
+    ),
     "WW0-Minor-Naval-Parity": SHARED
     + (
         "components/minor-naval-parity",

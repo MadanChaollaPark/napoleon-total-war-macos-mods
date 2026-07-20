@@ -33,6 +33,7 @@ STARTPOS_PATCH_HASH = "faa5903265d5308b2a212a6073bbec8b9fb76d77b04e938d157d35521
 STARTPOS_UPGRADE_PATCH_HASH = "9f7110e56b85cadbf8c794d1a05f3d4d9adb90c44693f104cb14187ae304ab3b"
 AGENT_PACK_HASH = "7115ae6cb60c5102121d81bf57bb53b92852703752a5b76a2a65f66e171d1baf"
 NAVAL_PACK_HASH = "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3"
+UNIVERSITY_PACK_HASH = "e40cecb7deeb07ef4c1b5ce14938bfa20e5cf529dad01ee9dc5eccd56b32ad0c"
 MINOR_NAVAL_PACK_HASH = "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34c62bb67e2"
 BASIC_HOWITZER_PACK_HASH = "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44"
 EXPERIMENTAL_HOWITZER_PACK_HASH = "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d"
@@ -41,6 +42,7 @@ RADIOUS_PACK_HASH = "55a98db54f04d47c05953a335b69706481a31290c171ba4e8de8776743e
 
 PACK_HASHES = {
     "agents": AGENT_PACK_HASH,
+    "university": UNIVERSITY_PACK_HASH,
     "naval": NAVAL_PACK_HASH,
     "minor-naval": MINOR_NAVAL_PACK_HASH,
     "basic-howitzers": BASIC_HOWITZER_PACK_HASH,
@@ -52,6 +54,7 @@ COMPONENT_ORDER = (
     "radious",
     "unlock",
     "agents",
+    "university",
     "naval",
     "minor-naval",
     "basic-howitzers",
@@ -90,6 +93,8 @@ def component_artifacts() -> dict[str, Path]:
         / "components/middle-eastern-agent-parity/WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": REPO_ROOT
         / "components/ottoman-naval-parity/WW0_Ottoman_Naval_Parity.pack",
+        "university": REPO_ROOT
+        / "components/university-minister-candidates/WW0_University_Minister_Candidates.pack",
         "minor-naval": REPO_ROOT
         / "components/minor-naval-parity/WW0_Minor_Naval_Parity_Fix.pack",
         "basic-howitzers": REPO_ROOT
@@ -111,6 +116,7 @@ def target_paths(app: Path, support: Path) -> dict[str, Path]:
         "script": support / "AppData/scripts/user.script.txt",
         "agents": vfs / "WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": vfs / "WW0_Ottoman_Naval_Parity.pack",
+        "university": vfs / "WW0_University_Minister_Candidates.pack",
         "minor-naval": vfs / "WW0_Minor_Naval_Parity_Fix.pack",
         "basic-howitzers": vfs / "WW0_Basic_Howitzer_Parity.pack",
         "experimental-howitzers": vfs / "WW0_Experimental_Howitzer_Parity.pack",
@@ -143,6 +149,7 @@ def fragment_body(component: str) -> list[str]:
     fragments = {
         "unlock": "components/all-factions-unlocker/user.script.fragment.txt",
         "agents": "components/middle-eastern-agent-parity/user.script.fragment.txt",
+        "university": "components/university-minister-candidates/user.script.fragment.txt",
         "naval": "components/ottoman-naval-parity/user.script.fragment.txt",
         "minor-naval": "components/minor-naval-parity/user.script.fragment.txt",
         "basic-howitzers": "components/basic-howitzer-parity/user.script.fragment.txt",

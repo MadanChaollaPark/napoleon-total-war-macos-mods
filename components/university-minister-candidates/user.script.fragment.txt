@@ -1,0 +1,3 @@
+# BEGIN NTW-MACOS-MODS: university-minister-candidates
+mod "WW0_University_Minister_Candidates.pack";
+# END NTW-MACOS-MODS: university-minister-candidates

@@ -18,14 +18,18 @@ From a release archive, double-click:
 installers/macos/INSTALL_ALL.command
 ```
 
-This installs faction unlocks, all database parity packs, and the checksummed
-WW0 Europe startpos delta. It does not download or enable Radious.
+This installs faction unlocks, all core faction-parity database packs, and the
+checksummed WW0 Europe startpos delta. It does not download or enable Radious.
 
 If the verified Radious pack is already in Feral's VFS directory, use:
 
 ```text
 installers/macos/INSTALL_ALL_WITH_RADIOUS.command
 ```
+
+The university minister component is an optional gameplay change and is not
+part of either complete-suite command. Install it separately with its component
+launcher or the `university` command below.
 
 ## Individual components
 
@@ -34,6 +38,7 @@ Open Terminal in `installers/macos` and choose one or more names:
 ```bash
 python3 mod_manager.py install --components unlock
 python3 mod_manager.py install --components agents
+python3 mod_manager.py install --components university
 python3 mod_manager.py install --components naval
 python3 mod_manager.py install --components startpos
 python3 mod_manager.py install --components minor-naval
@@ -48,6 +53,7 @@ Component names are:
 
 - `unlock`: the 23-faction script block.
 - `agents`: Eastern Scholar and Assassin building/research parity.
+- `university`: education-tier chances for +1 Management on new minister candidates.
 - `naval`: five Ottoman late-game ship permissions.
 - `startpos`: new-campaign Ottoman, Crimean and Italian base-cap correction.
 - `minor-naval`: researched minor ships and Spain's steam-drydock chain.
