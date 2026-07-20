@@ -1,0 +1,4 @@
+# BEGIN NTW-MACOS-MODS: middle-eastern-agent-parity
+mod "WW0_Middle_Eastern_Agent_Parity.pack";
+# END NTW-MACOS-MODS: middle-eastern-agent-parity
+

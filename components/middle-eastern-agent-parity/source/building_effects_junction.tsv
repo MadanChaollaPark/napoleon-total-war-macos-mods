@@ -1,0 +1,8 @@
+building	effect	value
+tEducation1_college	agent_spawn_rate_eastern_scholar	4.0000
+tEducation2_university	agent_spawn_rate_eastern_scholar	8.0000
+tEducation3_enlightened_university	agent_spawn_rate_eastern_scholar	16.0000
+tSecret1_gentlemens_club	agent_spawn_rate_assassin	4.0000
+tSecret2_secret_society	agent_spawn_rate_assassin	8.0000
+tSecret3_masonic_lodge	agent_spawn_rate_assassin	16.0000
+
