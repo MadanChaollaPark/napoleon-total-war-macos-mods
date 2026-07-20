@@ -18,8 +18,8 @@ From a release archive, double-click:
 installers/macos/INSTALL_ALL.command
 ```
 
-This installs faction unlocks, both database packs, and the checksummed WW0
-Europe startpos delta. It does not download or enable Radious.
+This installs faction unlocks, all database parity packs, and the checksummed
+WW0 Europe startpos delta. It does not download or enable Radious.
 
 If the verified Radious pack is already in Feral's VFS directory, use:
 
@@ -36,6 +36,10 @@ python3 mod_manager.py install --components unlock
 python3 mod_manager.py install --components agents
 python3 mod_manager.py install --components naval
 python3 mod_manager.py install --components startpos
+python3 mod_manager.py install --components minor-naval
+python3 mod_manager.py install --components basic-howitzers
+python3 mod_manager.py install --components experimental-howitzers
+python3 mod_manager.py install --components rockets
 python3 mod_manager.py install --components radious
 python3 mod_manager.py install --components agents naval
 ```
@@ -45,7 +49,11 @@ Component names are:
 - `unlock`: the 23-faction script block.
 - `agents`: Eastern Scholar and Assassin building/research parity.
 - `naval`: five Ottoman late-game ship permissions.
-- `startpos`: new-campaign Ottoman/Crimean base cap correction.
+- `startpos`: new-campaign Ottoman, Crimean and Italian base-cap correction.
+- `minor-naval`: researched minor ships and Spain's steam-drydock chain.
+- `basic-howitzers`: ordinary Howitzers for the four empty rosters.
+- `experimental-howitzers`: Carcass Shot unit parity for 36 factions.
+- `rockets`: Rockets technology unit parity for 36 factions.
 - `radious`: only the managed loader line; requires the verified third-party pack.
 
 ## Installed locations
@@ -78,4 +86,3 @@ Backups and manifests:
 
 Use `--app`, `--support`, and `--state`, or set `NTW_APP_PATH`,
 `NTW_SUPPORT_PATH`, and `NTW_MOD_STATE_ROOT`.
-

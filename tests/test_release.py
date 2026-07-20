@@ -23,8 +23,12 @@ class ArtifactTests(unittest.TestCase):
             / "components/ottoman-naval-parity/WW0_Ottoman_Naval_Parity.pack": "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3",
             ROOT
             / "components/middle-eastern-agent-parity/WW0_Middle_Eastern_Agent_Parity.pack": "7115ae6cb60c5102121d81bf57bb53b92852703752a5b76a2a65f66e171d1baf",
-            ROOT
-            / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff": "1f9bb7cee4708983f282405e5ebff448b5a9f9359be3a2aa587382865f4cd358",
+            ROOT / "components/minor-naval-parity/WW0_Minor_Naval_Parity_Fix.pack": "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34c62bb67e2",
+            ROOT / "components/basic-howitzer-parity/WW0_Basic_Howitzer_Parity.pack": "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44",
+            ROOT / "components/experimental-howitzer-parity/WW0_Experimental_Howitzer_Parity.pack": "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d",
+            ROOT / "components/rocket-corps-parity/WW0_Rocket_Corps_Parity.pack": "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a",
+            ROOT / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff": "faa5903265d5308b2a212a6073bbec8b9fb76d77b04e938d157d35521a484ede",
+            ROOT / "components/ww0-agent-cap-startpos/ww0_italian_agent_caps_upgrade.bsdiff": "9f7110e56b85cadbf8c794d1a05f3d4d9adb90c44693f104cb14187ae304ab3b",
         }
         for artifact, digest in expected.items():
             self.assertEqual(sha256(artifact), digest, artifact)
@@ -50,9 +54,24 @@ class ArtifactTests(unittest.TestCase):
             self.assertEqual(len(rows) - 1, count, source)
 
     def test_startpos_delta_is_compact_bsdiff(self) -> None:
-        patch = ROOT / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff"
-        self.assertEqual(patch.read_bytes()[:8], b"BSDIFF40")
-        self.assertLess(patch.stat().st_size, 200_000)
+        patches = (
+            ROOT / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff",
+            ROOT / "components/ww0-agent-cap-startpos/ww0_italian_agent_caps_upgrade.bsdiff",
+        )
+        for patch in patches:
+            self.assertEqual(patch.read_bytes()[:8], b"BSDIFF40")
+            self.assertLess(patch.stat().st_size, 200_000)
+
+    def test_new_component_faction_manifests(self) -> None:
+        expected = {
+            ROOT / "components/basic-howitzer-parity/source/factions.txt": 4,
+            ROOT / "components/experimental-howitzer-parity/source/factions.txt": 36,
+            ROOT / "components/rocket-corps-parity/source/factions.txt": 36,
+        }
+        for manifest, count in expected.items():
+            factions = [line for line in manifest.read_text().splitlines() if line.strip()]
+            self.assertEqual(len(factions), count, manifest)
+            self.assertEqual(len(set(factions)), count, manifest)
 
     def test_no_upstream_or_personal_binary_dump(self) -> None:
         forbidden = {
@@ -96,7 +115,16 @@ class TransactionTests(unittest.TestCase):
             script.write_bytes(original)
 
             common = ("--app", str(root / "app"), "--support", str(support), "--state", str(state))
-            self.run_manager(*common, "install", "--components", "unlock", "agents", "naval")
+            selected = (
+                "unlock",
+                "agents",
+                "naval",
+                "minor-naval",
+                "basic-howitzers",
+                "experimental-howitzers",
+                "rockets",
+            )
+            self.run_manager(*common, "install", "--components", *selected)
 
             installed = script.read_bytes()
             self.assertNotEqual(installed, original)
@@ -105,7 +133,7 @@ class TransactionTests(unittest.TestCase):
             self.assertIn('mod "Unrelated.pack";', text)
             self.assertEqual(text.count('mod "WW0_Ottoman_Naval_Parity.pack";'), 1)
             self.assertEqual(text.count("unlock_faction faction_ottomans;"), 1)
-            for marker in ("unlock", "agents", "naval"):
+            for marker in selected:
                 self.assertEqual(text.count(f"# BEGIN NTW-MACOS-MODS: {marker}"), 1)
 
             vfs = support / "VFS/Local/Napoleon Total War/data"
@@ -117,11 +145,31 @@ class TransactionTests(unittest.TestCase):
                 sha256(vfs / "WW0_Ottoman_Naval_Parity.pack"),
                 "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3",
             )
+            self.assertEqual(
+                sha256(vfs / "WW0_Minor_Naval_Parity_Fix.pack"),
+                "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34c62bb67e2",
+            )
+            self.assertEqual(
+                sha256(vfs / "WW0_Basic_Howitzer_Parity.pack"),
+                "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44",
+            )
+            self.assertEqual(
+                sha256(vfs / "WW0_Experimental_Howitzer_Parity.pack"),
+                "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d",
+            )
+            self.assertEqual(
+                sha256(vfs / "WW0_Rocket_Corps_Parity.pack"),
+                "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a",
+            )
 
             self.run_manager(*common, "rollback")
             self.assertEqual(script.read_bytes(), original)
             self.assertFalse((vfs / "WW0_Middle_Eastern_Agent_Parity.pack").exists())
             self.assertFalse((vfs / "WW0_Ottoman_Naval_Parity.pack").exists())
+            self.assertFalse((vfs / "WW0_Minor_Naval_Parity_Fix.pack").exists())
+            self.assertFalse((vfs / "WW0_Basic_Howitzer_Parity.pack").exists())
+            self.assertFalse((vfs / "WW0_Experimental_Howitzer_Parity.pack").exists())
+            self.assertFalse((vfs / "WW0_Rocket_Corps_Parity.pack").exists())
 
     def test_unknown_existing_pack_is_not_overwritten(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

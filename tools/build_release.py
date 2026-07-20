@@ -36,6 +36,26 @@ ARCHIVES = {
         "components/middle-eastern-agent-parity",
         "installers/macos",
     ),
+    "WW0-Minor-Naval-Parity": SHARED
+    + (
+        "components/minor-naval-parity",
+        "installers/macos",
+    ),
+    "WW0-Basic-Howitzer-Parity": SHARED
+    + (
+        "components/basic-howitzer-parity",
+        "installers/macos",
+    ),
+    "WW0-Experimental-Howitzer-Parity": SHARED
+    + (
+        "components/experimental-howitzer-parity",
+        "installers/macos",
+    ),
+    "WW0-Rocket-Corps-Parity": SHARED
+    + (
+        "components/rocket-corps-parity",
+        "installers/macos",
+    ),
     "WW0-Agent-Cap-Startpos": SHARED
     + ("components/ww0-agent-cap-startpos",),
     "NTW-macOS-complete-suite": (
@@ -110,4 +130,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

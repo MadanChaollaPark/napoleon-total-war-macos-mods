@@ -27,14 +27,39 @@ DEFAULT_SUPPORT = Path.home() / (
 DEFAULT_STATE = Path.home() / "Library/Application Support/Napoleon Total War macOS Mods"
 
 STARTPOS_UPSTREAM_HASH = "35e29a3a220eb6fede7f15bcd52af0c6338fc902ae247af803bf30ca56402394"
-STARTPOS_PATCHED_HASH = "a52843a83bdbb00710ac74ac3cdf87d76f2209bae81818fdd7016395d80fdf30"
-STARTPOS_PATCH_HASH = "1f9bb7cee4708983f282405e5ebff448b5a9f9359be3a2aa587382865f4cd358"
+STARTPOS_LEGACY_PATCHED_HASH = "a52843a83bdbb00710ac74ac3cdf87d76f2209bae81818fdd7016395d80fdf30"
+STARTPOS_PATCHED_HASH = "1a28aeb95cfa4f342eab3b17ddb7818abbb4e059038638b8f4c0d4fc7d58eb0d"
+STARTPOS_PATCH_HASH = "faa5903265d5308b2a212a6073bbec8b9fb76d77b04e938d157d35521a484ede"
+STARTPOS_UPGRADE_PATCH_HASH = "9f7110e56b85cadbf8c794d1a05f3d4d9adb90c44693f104cb14187ae304ab3b"
 AGENT_PACK_HASH = "7115ae6cb60c5102121d81bf57bb53b92852703752a5b76a2a65f66e171d1baf"
 NAVAL_PACK_HASH = "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3"
+MINOR_NAVAL_PACK_HASH = "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34c62bb67e2"
+BASIC_HOWITZER_PACK_HASH = "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44"
+EXPERIMENTAL_HOWITZER_PACK_HASH = "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d"
+ROCKET_PACK_HASH = "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a"
 RADIOUS_PACK_HASH = "55a98db54f04d47c05953a335b69706481a31290c171ba4e8de8776743eeded7"
 
-COMPONENT_ORDER = ("radious", "unlock", "agents", "naval", "startpos")
-SCRIPT_COMPONENTS = frozenset(("radious", "unlock", "agents", "naval"))
+PACK_HASHES = {
+    "agents": AGENT_PACK_HASH,
+    "naval": NAVAL_PACK_HASH,
+    "minor-naval": MINOR_NAVAL_PACK_HASH,
+    "basic-howitzers": BASIC_HOWITZER_PACK_HASH,
+    "experimental-howitzers": EXPERIMENTAL_HOWITZER_PACK_HASH,
+    "rockets": ROCKET_PACK_HASH,
+}
+
+COMPONENT_ORDER = (
+    "radious",
+    "unlock",
+    "agents",
+    "naval",
+    "minor-naval",
+    "basic-howitzers",
+    "experimental-howitzers",
+    "rockets",
+    "startpos",
+)
+SCRIPT_COMPONENTS = frozenset(("radious", "unlock", *PACK_HASHES))
 
 
 class InstallError(RuntimeError):
@@ -65,8 +90,18 @@ def component_artifacts() -> dict[str, Path]:
         / "components/middle-eastern-agent-parity/WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": REPO_ROOT
         / "components/ottoman-naval-parity/WW0_Ottoman_Naval_Parity.pack",
+        "minor-naval": REPO_ROOT
+        / "components/minor-naval-parity/WW0_Minor_Naval_Parity_Fix.pack",
+        "basic-howitzers": REPO_ROOT
+        / "components/basic-howitzer-parity/WW0_Basic_Howitzer_Parity.pack",
+        "experimental-howitzers": REPO_ROOT
+        / "components/experimental-howitzer-parity/WW0_Experimental_Howitzer_Parity.pack",
+        "rockets": REPO_ROOT
+        / "components/rocket-corps-parity/WW0_Rocket_Corps_Parity.pack",
         "startpos": REPO_ROOT
         / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff",
+        "startpos_upgrade": REPO_ROOT
+        / "components/ww0-agent-cap-startpos/ww0_italian_agent_caps_upgrade.bsdiff",
     }
 
 
@@ -76,6 +111,10 @@ def target_paths(app: Path, support: Path) -> dict[str, Path]:
         "script": support / "AppData/scripts/user.script.txt",
         "agents": vfs / "WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": vfs / "WW0_Ottoman_Naval_Parity.pack",
+        "minor-naval": vfs / "WW0_Minor_Naval_Parity_Fix.pack",
+        "basic-howitzers": vfs / "WW0_Basic_Howitzer_Parity.pack",
+        "experimental-howitzers": vfs / "WW0_Experimental_Howitzer_Parity.pack",
+        "rockets": vfs / "WW0_Rocket_Corps_Parity.pack",
         "radious": vfs / "Radious_CampaignAI.pack",
         "startpos": app
         / "Contents/Resources/Data/Data/campaigns/ww0_europe/startpos.esf",
@@ -101,16 +140,19 @@ def encode_script(text: str, encoding: str, bom: bytes) -> bytes:
 
 
 def fragment_body(component: str) -> list[str]:
-    if component == "unlock":
-        fragment = REPO_ROOT / "components/all-factions-unlocker/user.script.fragment.txt"
-    elif component == "agents":
-        fragment = REPO_ROOT / "components/middle-eastern-agent-parity/user.script.fragment.txt"
-    elif component == "naval":
-        fragment = REPO_ROOT / "components/ottoman-naval-parity/user.script.fragment.txt"
-    elif component == "radious":
-        fragment = REPO_ROOT / "components/radious-compatibility/user.script.fragment.txt"
-    else:
+    fragments = {
+        "unlock": "components/all-factions-unlocker/user.script.fragment.txt",
+        "agents": "components/middle-eastern-agent-parity/user.script.fragment.txt",
+        "naval": "components/ottoman-naval-parity/user.script.fragment.txt",
+        "minor-naval": "components/minor-naval-parity/user.script.fragment.txt",
+        "basic-howitzers": "components/basic-howitzer-parity/user.script.fragment.txt",
+        "experimental-howitzers": "components/experimental-howitzer-parity/user.script.fragment.txt",
+        "rockets": "components/rocket-corps-parity/user.script.fragment.txt",
+        "radious": "components/radious-compatibility/user.script.fragment.txt",
+    }
+    if component not in fragments:
         raise InstallError(f"No script fragment for component: {component}")
+    fragment = REPO_ROOT / fragments[component]
     lines = fragment.read_text(encoding="utf-8").splitlines()
     lines = [line for line in lines if not line.startswith("# BEGIN ") and not line.startswith("# END ")]
     while lines and not lines[0].strip():
@@ -192,16 +234,16 @@ def write_manifest(path: Path, manifest: dict[str, object]) -> None:
 
 def validate_artifacts(selected: set[str], paths: dict[str, Path]) -> None:
     artifacts = component_artifacts()
-    expectations = {
-        "agents": AGENT_PACK_HASH,
-        "naval": NAVAL_PACK_HASH,
-        "startpos": STARTPOS_PATCH_HASH,
-    }
+    expectations = {**PACK_HASHES, "startpos": STARTPOS_PATCH_HASH}
     for component, expected in expectations.items():
         if component in selected:
             artifact = artifacts[component]
             if not artifact.is_file() or sha256(artifact) != expected:
                 raise InstallError(f"Component artifact failed verification: {artifact}")
+    if "startpos" in selected:
+        upgrade = artifacts["startpos_upgrade"]
+        if not upgrade.is_file() or sha256(upgrade) != STARTPOS_UPGRADE_PATCH_HASH:
+            raise InstallError(f"Component artifact failed verification: {upgrade}")
     if "radious" in selected:
         radious = paths["radious"]
         if not radious.is_file():
@@ -220,14 +262,18 @@ def install(args: argparse.Namespace) -> None:
     paths = target_paths(app, support)
     validate_artifacts(selected, paths)
 
-    for component, expected in (("agents", AGENT_PACK_HASH), ("naval", NAVAL_PACK_HASH)):
+    for component, expected in PACK_HASHES.items():
         if component in selected and paths[component].exists() and sha256(paths[component]) != expected:
             raise InstallError(f"Unknown existing pack would be overwritten: {paths[component]}")
     if "startpos" in selected:
         if not paths["startpos"].is_file():
             raise InstallError(f"WW0 Europe startpos not found: {paths['startpos']}")
         current = sha256(paths["startpos"])
-        if current not in (STARTPOS_UPSTREAM_HASH, STARTPOS_PATCHED_HASH):
+        if current not in (
+            STARTPOS_UPSTREAM_HASH,
+            STARTPOS_LEGACY_PATCHED_HASH,
+            STARTPOS_PATCHED_HASH,
+        ):
             raise InstallError("Unknown WW0 startpos version; nothing was changed.")
 
     script_selected = [name for name in COMPONENT_ORDER if name in selected and name in SCRIPT_COMPONENTS]
@@ -246,7 +292,7 @@ def install(args: argparse.Namespace) -> None:
     entries: dict[str, dict[str, object]] = {}
     if script_selected:
         entries["script"] = snapshot(paths["script"], "user.script.txt", transaction)
-    for component in ("agents", "naval", "startpos"):
+    for component in (*PACK_HASHES, "startpos"):
         if component in selected:
             entries[component] = snapshot(paths[component], paths[component].name, transaction)
 
@@ -262,7 +308,7 @@ def install(args: argparse.Namespace) -> None:
 
     try:
         artifacts = component_artifacts()
-        for component, expected in (("agents", AGENT_PACK_HASH), ("naval", NAVAL_PACK_HASH)):
+        for component, expected in PACK_HASHES.items():
             if component in selected:
                 atomic_write(paths[component], artifacts[component].read_bytes())
                 if sha256(paths[component]) != expected:
@@ -275,10 +321,15 @@ def install(args: argparse.Namespace) -> None:
 
         if "startpos" in selected:
             before_hash = sha256(paths["startpos"])
-            if before_hash == STARTPOS_UPSTREAM_HASH:
+            if before_hash in (STARTPOS_UPSTREAM_HASH, STARTPOS_LEGACY_PATCHED_HASH):
                 generated = transaction / "generated-startpos.esf"
+                patch = (
+                    artifacts["startpos"]
+                    if before_hash == STARTPOS_UPSTREAM_HASH
+                    else artifacts["startpos_upgrade"]
+                )
                 subprocess.run(
-                    ["/usr/bin/bspatch", str(paths["startpos"]), str(generated), str(artifacts["startpos"])],
+                    ["/usr/bin/bspatch", str(paths["startpos"]), str(generated), str(patch)],
                     check=True,
                 )
                 if sha256(generated) != STARTPOS_PATCHED_HASH:
@@ -351,33 +402,30 @@ def rollback(args: argparse.Namespace) -> None:
 def status(args: argparse.Namespace) -> None:
     app, support = Path(args.app), Path(args.support)
     paths = target_paths(app, support)
-    expected = {
-        "agents": AGENT_PACK_HASH,
-        "naval": NAVAL_PACK_HASH,
-        "radious": RADIOUS_PACK_HASH,
-    }
+    expected = {**PACK_HASHES, "radious": RADIOUS_PACK_HASH}
     for component, digest in expected.items():
         target = paths[component]
         state = "missing"
         if target.is_file():
             state = "installed" if sha256(target) == digest else "unknown version"
-        print(f"{component:10} {state:16} {target}")
+        print(f"{component:26} {state:16} {target}")
     startpos = paths["startpos"]
     startpos_state = "missing"
     if startpos.is_file():
         digest = sha256(startpos)
         startpos_state = {
             STARTPOS_UPSTREAM_HASH: "upstream",
+            STARTPOS_LEGACY_PATCHED_HASH: "legacy patched",
             STARTPOS_PATCHED_HASH: "patched",
         }.get(digest, "unknown version")
-    print(f"{'startpos':10} {startpos_state:16} {startpos}")
+    print(f"{'startpos':26} {startpos_state:16} {startpos}")
     script = paths["script"]
     if script.is_file():
         text, encoding, bom = decode_script(script)
         print(f"script     present ({encoding}, BOM={'yes' if bom else 'no'}) {script}")
         for component in sorted(SCRIPT_COMPONENTS):
             marker = f"# BEGIN NTW-MACOS-MODS: {component}"
-            print(f"  {component:8} {'managed' if marker in text else 'not managed'}")
+            print(f"  {component:24} {'managed' if marker in text else 'not managed'}")
     else:
         print(f"script     missing          {script}")
 
@@ -394,7 +442,16 @@ def parser() -> argparse.ArgumentParser:
         "--components",
         nargs="+",
         choices=COMPONENT_ORDER,
-        default=["unlock", "agents", "naval", "startpos"],
+        default=[
+            "unlock",
+            "agents",
+            "naval",
+            "minor-naval",
+            "basic-howitzers",
+            "experimental-howitzers",
+            "rockets",
+            "startpos",
+        ],
     )
     install_parser.set_defaults(handler=install)
 

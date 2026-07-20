@@ -1,7 +1,8 @@
 # Napoleon: Total War macOS Mods
 
 Modular, reversible fixes for the Feral macOS release of Napoleon: Total War,
-focused on completing playable Ottoman and Crimean behavior in World War zerO.
+focused on completing research, unit, ship and agent behavior for factions made
+playable by World War zerO.
 
 ## Included components
 
@@ -10,7 +11,11 @@ focused on completing playable Ottoman and Crimean behavior in World War zerO.
 | [All-factions unlocker](components/all-factions-unlocker/) | Adds 23 optional faction keys to `user.script.txt` | Yes |
 | [Ottoman naval parity](components/ottoman-naval-parity/) | Enables five researched late-game Ottoman ships, including Ironclads | Yes |
 | [Middle Eastern agent parity](components/middle-eastern-agent-parity/) | Mirrors normal building/research benefits to Eastern Scholars and Assassins | Yes |
-| [WW0 agent-cap startpos](components/ww0-agent-cap-startpos/) | Corrects Ottoman and Crimean base cap records for new campaigns | Yes |
+| [WW0 agent-cap startpos](components/ww0-agent-cap-startpos/) | Corrects Ottoman, Crimean and three Italian base-cap records for new campaigns | Yes |
+| [Minor naval parity](components/minor-naval-parity/) | Repairs special-roster late ships and Spain's steam drydock | Yes |
+| [Basic Howitzer parity](components/basic-howitzer-parity/) | Gives Spain, Portugal, Switzerland and Crimea an ordinary Howitzer | Yes |
+| [Experimental Howitzer parity](components/experimental-howitzer-parity/) | Makes Carcass Shot useful for all 36 non-major factions | Yes |
+| [Rocket Corps parity](components/rocket-corps-parity/) | Adds research-gated European and Eastern Rocket Troops | Yes |
 | [Radious compatibility](components/radious-compatibility/) | Adds an optional loader line for a separately downloaded Radious pack | Yes |
 
 There is no fog-of-war mod in this release: that issue was investigated but no
@@ -22,7 +27,8 @@ validated correction was produced.
 2. Quit Napoleon: Total War.
 3. Download and unzip the latest `NTW-macOS-complete-suite` release asset.
 4. Double-click `installers/macos/INSTALL_ALL.command`.
-5. Start a **new WW0 campaign** for the corrected Ottoman/Crimean base agent caps.
+5. Start a **new WW0 campaign** for the corrected Ottoman, Crimean and Italian
+   base agent caps.
 
 If Radious is already installed from its [official ModDB download](https://www.moddb.com/games/napoleon-total-war/downloads/radious-campaign-ai),
 use `INSTALL_ALL_WITH_RADIOUS.command` instead.
@@ -50,7 +56,8 @@ and [compatibility matrix](docs/COMPATIBILITY.md).
 - The startpos delta targets one exact WW0 Europe build; its accepted hashes are documented.
 - Existing saves keep their serialized base agent caps. The database packs can
   load with an existing save, but the complete correction requires a new campaign.
-- Rocket Troops are not added because no generic or Ottoman rocket-unit variant exists.
+- New parity units reuse verified game models and faction-owned artillery
+  uniforms; no external unit asset pack is required.
 - This is an unofficial fan project. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Verification

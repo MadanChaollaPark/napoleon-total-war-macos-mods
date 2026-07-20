@@ -29,3 +29,8 @@ Transaction IDs and manifests are stored under:
 
 Rollback does not touch campaign saves.
 
+The new unit and naval fixes are separate pack files and managed script blocks,
+so a transaction rollback removes them without altering WW0, Radious, the
+existing Ottoman parity pack or unrelated user-script content. Startpos
+rollback restores whichever exact clean or legacy-patched file existed before
+the transaction.

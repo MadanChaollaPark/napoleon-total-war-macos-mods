@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0 - 2026-07-20
+
+- Repaired Spain's national steam-drydock recruitment and technology chain.
+- Added researched late-ship permissions for special-roster playable factions.
+- Added ordinary Howitzers for Spain, Portugal, Switzerland and Crimea.
+- Added European and Eastern Experimental Howitzers for 36 non-major factions.
+- Added European and Eastern Rocket Troops for 36 non-major factions.
+- Restored base Gentleman and Rake caps for Italy, Papal States and Venice.
+- Added clean-install and legacy-upgrade startpos deltas.
+- Extended transactional install, verification and rollback to every component.
+
 ## 1.0.0 - 2026-07-20
 
 - Added a 23-faction optional unlock block.
