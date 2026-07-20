@@ -6,7 +6,7 @@ The installer intentionally supports only the documented upstream hash. A WW0
 update or another startpos mod changes that hash. Do not force the delta onto an
 unknown file; install the matching WW0 build or wait for an updated delta.
 
-## Unknown existing parity pack
+## Unknown existing component pack
 
 Another version already occupies the target name. Move it aside manually only
 after preserving it, then retry. The installer will never overwrite an unknown
@@ -25,9 +25,16 @@ repository does not supply or modify the Radious binary.
   does not grant research or a free steam drydock.
 - Start a new WW0 campaign for the corrected base Scholar/Assassin caps.
 
+## University Educated candidates do not appear
+
+- Confirm `STATUS.command` reports `university` as installed and managed.
+- The chances are 6% / 12% / 20% for College / University / Enlightened
+  University, so several new candidates may be generated before the trait appears.
+- Existing pool candidates are not rerolled. The building is checked only when a
+  genuinely new government candidate is created.
+
 ## The game crashes
 
 Roll back the latest transaction, then add components one at a time. WW0 itself
 documents a known Grand Campaign return-to-menu crash. Keep crash diagnosis
 separate from this repository's component checks.
-

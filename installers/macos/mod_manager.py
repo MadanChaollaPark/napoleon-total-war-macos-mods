@@ -31,10 +31,11 @@ STARTPOS_PATCHED_HASH = "a52843a83bdbb00710ac74ac3cdf87d76f2209bae81818fdd701639
 STARTPOS_PATCH_HASH = "1f9bb7cee4708983f282405e5ebff448b5a9f9359be3a2aa587382865f4cd358"
 AGENT_PACK_HASH = "7115ae6cb60c5102121d81bf57bb53b92852703752a5b76a2a65f66e171d1baf"
 NAVAL_PACK_HASH = "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3"
+UNIVERSITY_PACK_HASH = "e40cecb7deeb07ef4c1b5ce14938bfa20e5cf529dad01ee9dc5eccd56b32ad0c"
 RADIOUS_PACK_HASH = "55a98db54f04d47c05953a335b69706481a31290c171ba4e8de8776743eeded7"
 
-COMPONENT_ORDER = ("radious", "unlock", "agents", "naval", "startpos")
-SCRIPT_COMPONENTS = frozenset(("radious", "unlock", "agents", "naval"))
+COMPONENT_ORDER = ("radious", "unlock", "agents", "university", "naval", "startpos")
+SCRIPT_COMPONENTS = frozenset(("radious", "unlock", "agents", "university", "naval"))
 
 
 class InstallError(RuntimeError):
@@ -65,6 +66,8 @@ def component_artifacts() -> dict[str, Path]:
         / "components/middle-eastern-agent-parity/WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": REPO_ROOT
         / "components/ottoman-naval-parity/WW0_Ottoman_Naval_Parity.pack",
+        "university": REPO_ROOT
+        / "components/university-minister-candidates/WW0_University_Minister_Candidates.pack",
         "startpos": REPO_ROOT
         / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff",
     }
@@ -76,6 +79,7 @@ def target_paths(app: Path, support: Path) -> dict[str, Path]:
         "script": support / "AppData/scripts/user.script.txt",
         "agents": vfs / "WW0_Middle_Eastern_Agent_Parity.pack",
         "naval": vfs / "WW0_Ottoman_Naval_Parity.pack",
+        "university": vfs / "WW0_University_Minister_Candidates.pack",
         "radious": vfs / "Radious_CampaignAI.pack",
         "startpos": app
         / "Contents/Resources/Data/Data/campaigns/ww0_europe/startpos.esf",
@@ -107,6 +111,8 @@ def fragment_body(component: str) -> list[str]:
         fragment = REPO_ROOT / "components/middle-eastern-agent-parity/user.script.fragment.txt"
     elif component == "naval":
         fragment = REPO_ROOT / "components/ottoman-naval-parity/user.script.fragment.txt"
+    elif component == "university":
+        fragment = REPO_ROOT / "components/university-minister-candidates/user.script.fragment.txt"
     elif component == "radious":
         fragment = REPO_ROOT / "components/radious-compatibility/user.script.fragment.txt"
     else:
@@ -195,6 +201,7 @@ def validate_artifacts(selected: set[str], paths: dict[str, Path]) -> None:
     expectations = {
         "agents": AGENT_PACK_HASH,
         "naval": NAVAL_PACK_HASH,
+        "university": UNIVERSITY_PACK_HASH,
         "startpos": STARTPOS_PATCH_HASH,
     }
     for component, expected in expectations.items():
@@ -220,7 +227,11 @@ def install(args: argparse.Namespace) -> None:
     paths = target_paths(app, support)
     validate_artifacts(selected, paths)
 
-    for component, expected in (("agents", AGENT_PACK_HASH), ("naval", NAVAL_PACK_HASH)):
+    for component, expected in (
+        ("agents", AGENT_PACK_HASH),
+        ("university", UNIVERSITY_PACK_HASH),
+        ("naval", NAVAL_PACK_HASH),
+    ):
         if component in selected and paths[component].exists() and sha256(paths[component]) != expected:
             raise InstallError(f"Unknown existing pack would be overwritten: {paths[component]}")
     if "startpos" in selected:
@@ -246,7 +257,7 @@ def install(args: argparse.Namespace) -> None:
     entries: dict[str, dict[str, object]] = {}
     if script_selected:
         entries["script"] = snapshot(paths["script"], "user.script.txt", transaction)
-    for component in ("agents", "naval", "startpos"):
+    for component in ("agents", "university", "naval", "startpos"):
         if component in selected:
             entries[component] = snapshot(paths[component], paths[component].name, transaction)
 
@@ -262,7 +273,11 @@ def install(args: argparse.Namespace) -> None:
 
     try:
         artifacts = component_artifacts()
-        for component, expected in (("agents", AGENT_PACK_HASH), ("naval", NAVAL_PACK_HASH)):
+        for component, expected in (
+            ("agents", AGENT_PACK_HASH),
+            ("university", UNIVERSITY_PACK_HASH),
+            ("naval", NAVAL_PACK_HASH),
+        ):
             if component in selected:
                 atomic_write(paths[component], artifacts[component].read_bytes())
                 if sha256(paths[component]) != expected:
@@ -354,6 +369,7 @@ def status(args: argparse.Namespace) -> None:
     expected = {
         "agents": AGENT_PACK_HASH,
         "naval": NAVAL_PACK_HASH,
+        "university": UNIVERSITY_PACK_HASH,
         "radious": RADIOUS_PACK_HASH,
     }
     for component, digest in expected.items():

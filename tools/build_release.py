@@ -36,6 +36,11 @@ ARCHIVES = {
         "components/middle-eastern-agent-parity",
         "installers/macos",
     ),
+    "NTW-University-Minister-Candidates": SHARED
+    + (
+        "components/university-minister-candidates",
+        "installers/macos",
+    ),
     "WW0-Agent-Cap-Startpos": SHARED
     + ("components/ww0-agent-cap-startpos",),
     "NTW-macOS-complete-suite": (
@@ -110,4 +115,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
