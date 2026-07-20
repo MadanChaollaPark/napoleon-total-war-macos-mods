@@ -35,9 +35,9 @@ AGENT_PACK_HASH = "7115ae6cb60c5102121d81bf57bb53b92852703752a5b76a2a65f66e171d1
 NAVAL_PACK_HASH = "2f18aa43cb51f970838ebd76170a49a28becac558dbb795fd945fa6bb71176b3"
 UNIVERSITY_PACK_HASH = "e40cecb7deeb07ef4c1b5ce14938bfa20e5cf529dad01ee9dc5eccd56b32ad0c"
 MINOR_NAVAL_PACK_HASH = "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34c62bb67e2"
-BASIC_HOWITZER_PACK_HASH = "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44"
-EXPERIMENTAL_HOWITZER_PACK_HASH = "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d"
-ROCKET_PACK_HASH = "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a"
+BASIC_HOWITZER_PACK_HASH = "96ff592ad64c1831c129eedf57ccd72bcbe5ff15668ff13b56ade97e89341d4d"
+EXPERIMENTAL_HOWITZER_PACK_HASH = "663bd4653ed3cfd9b58b265700fb87fbcbc2b3d0d3480a77674389802cd220dd"
+ROCKET_PACK_HASH = "35ba8da230278939df9055a79dbc670655adfd106da10e520500b67bfdc33372"
 FAIR_AUTORESOLVE_PACK_HASH = "060b90d40dcccbea2922536cf19b5d3eb13759be9ac007997cdad98a71849f85"
 RADIOUS_PACK_HASH = "55a98db54f04d47c05953a335b69706481a31290c171ba4e8de8776743eeded7"
 
@@ -50,6 +50,21 @@ PACK_HASHES = {
     "experimental-howitzers": EXPERIMENTAL_HOWITZER_PACK_HASH,
     "rockets": ROCKET_PACK_HASH,
     "fair-autoresolve": FAIR_AUTORESOLVE_PACK_HASH,
+}
+
+# Accepted only as safe upgrade inputs. The installer still writes and verifies
+# the current hashes above, while preserving the previous file in its normal
+# transaction backup.
+LEGACY_PACK_HASHES = {
+    "basic-howitzers": frozenset(
+        ("268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44",)
+    ),
+    "experimental-howitzers": frozenset(
+        ("3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d",)
+    ),
+    "rockets": frozenset(
+        ("2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a",)
+    ),
 }
 
 COMPONENT_ORDER = (
@@ -277,8 +292,11 @@ def install(args: argparse.Namespace) -> None:
     validate_artifacts(selected, paths)
 
     for component, expected in PACK_HASHES.items():
-        if component in selected and paths[component].exists() and sha256(paths[component]) != expected:
-            raise InstallError(f"Unknown existing pack would be overwritten: {paths[component]}")
+        if component in selected and paths[component].exists():
+            existing = sha256(paths[component])
+            accepted = {expected, *LEGACY_PACK_HASHES.get(component, ())}
+            if existing not in accepted:
+                raise InstallError(f"Unknown existing pack would be overwritten: {paths[component]}")
     if "startpos" in selected:
         if not paths["startpos"].is_file():
             raise InstallError(f"WW0 Europe startpos not found: {paths['startpos']}")
@@ -421,7 +439,13 @@ def status(args: argparse.Namespace) -> None:
         target = paths[component]
         state = "missing"
         if target.is_file():
-            state = "installed" if sha256(target) == digest else "unknown version"
+            actual = sha256(target)
+            if actual == digest:
+                state = "installed"
+            elif actual in LEGACY_PACK_HASHES.get(component, ()):
+                state = "upgrade available"
+            else:
+                state = "unknown version"
         print(f"{component:26} {state:16} {target}")
     startpos = paths["startpos"]
     startpos_state = "missing"

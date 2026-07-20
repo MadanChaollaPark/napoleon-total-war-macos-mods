@@ -10,6 +10,10 @@ Napoleon: Total War and its data formats are property of Creative Assembly and
 SEGA. The macOS port is published by Feral Interactive. This project is an
 unofficial fan project and is not affiliated with or endorsed by those parties.
 
+Some unit database rows refer by name to icon and information-card images in a
+user's installed `data.pack`. Those images are not copied into this repository
+or its release packs.
+
 ## World War zerO
 
 [World War zerO](https://www.moddb.com/mods/world-war-zero) is created by
@@ -27,4 +31,3 @@ Europe startpos. Users must supply their own installed copy of WW0.
 is credited by ModDB to Radious / Sir Thoragoros. It remains an optional,
 separately downloaded dependency. Neither its RAR archive nor its pack is
 included in this repository.
-

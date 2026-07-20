@@ -10,9 +10,13 @@ Both require `military5_rockets` and the Engineer School. Every faction reuses
 its own existing artillery appearance and exact colour record. The AI quality
 is the same `800` value used by the five original Rocket Troops.
 
+The European-minor unit references Napoleon's Prussian Rocket Troop card, and
+the Eastern unit references the Russian card. These are runtime references to
+artwork already present in `data.pack`; the pack does not redistribute game
+images and no longer uses placeholder artwork.
+
 Pack SHA-256:
 
 ```text
-2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a
+35ba8da230278939df9055a79dbc670655adfd106da10e520500b67bfdc33372
 ```
-

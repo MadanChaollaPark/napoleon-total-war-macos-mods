@@ -1,10 +1,19 @@
 # Changelog
 
-## Unreleased
+## 1.1.1 - 2026-07-20
 
 - Added an optional fair auto-resolve component that neutralizes only the two
   hidden Very Hard AI strength bonuses used by automatic land and naval battle
   resolution.
+- Replaced placeholder Experimental Howitzer and Rocket Troop cards with
+  explicit references to installed, type-correct Prussian and Russian cards.
+- Rebuilt the basic Howitzer component as four faction-keyed units so Spain
+  and Crimea resolve Howitzer cards, while Portugal and Switzerland resolve
+  their closest available national artillery cards.
+- Added deterministic basic-Howitzer generation, exact building/technology/
+  faction tests, icon-reference tests, and a live installed-asset verifier.
+- Added transaction-safe upgrades from the three original v1.1.0 artillery
+  pack hashes.
 
 ## 1.1.0 - 2026-07-20
 

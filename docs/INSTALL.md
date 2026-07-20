@@ -100,6 +100,19 @@ components/fair-autoresolve/INSTALL.command
 This optional component affects both land and naval auto-resolve. It does not
 change unit statistics or any manually fought battle.
 
+## Verify installed artillery cards
+
+After installation, this read-only check confirms that the installed basic
+Howitzer, Experimental Howitzer and Rocket packs match the tested hashes and
+that every explicit card reference resolves inside the installed `data.pack`:
+
+```bash
+python3 tools/verify_installed_parity.py
+```
+
+This complements the repository tests; the final recruitment-tree and campaign
+screen check still happens in Napoleon itself.
+
 ## Custom locations
 
 Use `--app`, `--support`, and `--state`, or set `NTW_APP_PATH`,

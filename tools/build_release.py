@@ -76,20 +76,52 @@ ARCHIVES = {
         "components",
         "docs",
         "installers",
+        "tools/ntw_pack.py",
+        "tools/verify_installed_parity.py",
     ),
 }
 
+COMPONENT_COMMANDS = {
+    "NTW-All-Factions": "unlock",
+    "WW0-Ottoman-Naval-Parity": "naval",
+    "WW0-Middle-Eastern-Agent-Parity": "agents",
+    "NTW-University-Minister-Candidates": "university",
+    "NTW-Fair-Very-Hard-Autoresolve": "fair-autoresolve",
+    "WW0-Minor-Naval-Parity": "minor-naval",
+    "WW0-Basic-Howitzer-Parity": "basic-howitzers",
+    "WW0-Experimental-Howitzer-Parity": "experimental-howitzers",
+    "WW0-Rocket-Corps-Parity": "rockets",
+}
 
-def files_for(entries: tuple[str, ...]) -> list[Path]:
+SUITE_ONLY_LAUNCHERS = {
+    Path("installers/macos/INSTALL_ALL.command"),
+    Path("installers/macos/INSTALL_ALL_WITH_RADIOUS.command"),
+}
+
+
+def files_for(
+    entries: tuple[str, ...], *, exclude_suite_launchers: bool = False
+) -> list[Path]:
     files: set[Path] = set()
     for entry in entries:
         path = ROOT / entry
         if path.is_file():
             files.add(path)
         elif path.is_dir():
-            files.update(candidate for candidate in path.rglob("*") if candidate.is_file())
+            files.update(
+                candidate
+                for candidate in path.rglob("*")
+                if candidate.is_file()
+                and "__pycache__" not in candidate.parts
+                and candidate.suffix != ".pyc"
+                and candidate.name != ".DS_Store"
+            )
         else:
             raise FileNotFoundError(path)
+    if exclude_suite_launchers:
+        files = {
+            path for path in files if path.relative_to(ROOT) not in SUITE_ONLY_LAUNCHERS
+        }
     return sorted(files, key=lambda path: path.relative_to(ROOT).as_posix())
 
 
@@ -100,6 +132,20 @@ def add_file(archive: zipfile.ZipFile, path: Path) -> None:
     mode = stat.S_IMODE(path.stat().st_mode)
     info.external_attr = (stat.S_IFREG | mode) << 16
     archive.writestr(info, path.read_bytes())
+
+
+def add_component_launcher(archive: zipfile.ZipFile, component: str) -> None:
+    payload = (
+        "#!/bin/bash\n"
+        "set -euo pipefail\n"
+        'SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\n'
+        'exec /usr/bin/env python3 "$SCRIPT_DIR/installers/macos/mod_manager.py" '
+        f"install --components {component}\n"
+    ).encode("utf-8")
+    info = zipfile.ZipInfo("INSTALL_THIS_COMPONENT.command", FIXED_ZIP_TIME)
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = (stat.S_IFREG | 0o755) << 16
+    archive.writestr(info, payload)
 
 
 def sha256(path: Path) -> str:
@@ -123,8 +169,10 @@ def main() -> int:
     for name, entries in ARCHIVES.items():
         destination = output / f"{name}-v{args.version}.zip"
         with zipfile.ZipFile(destination, "w") as archive:
-            for path in files_for(entries):
+            for path in files_for(entries, exclude_suite_launchers=name in COMPONENT_COMMANDS):
                 add_file(archive, path)
+            if name in COMPONENT_COMMANDS:
+                add_component_launcher(archive, COMPONENT_COMMANDS[name])
         built.append(destination)
 
     sums = output / "SHA256SUMS.txt"

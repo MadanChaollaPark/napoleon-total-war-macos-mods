@@ -10,4 +10,10 @@
 | `units_to_exclusive_faction_permissions` | 36 |
 | `uniforms` | 36 |
 | `uniform_to_faction_colours` | 36 |
+| localized unit names | 2 |
 
+The two `units` rows use explicit, non-placeholder icon and information-card
+references already supplied by Napoleon's `data.pack`:
+
+- European-minor: Prussian Rocket Troop.
+- Eastern: Russian Rocket Troop.
