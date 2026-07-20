@@ -41,6 +41,11 @@ ARCHIVES = {
         "components/university-minister-candidates",
         "installers/macos",
     ),
+    "NTW-Fair-Very-Hard-Autoresolve": SHARED
+    + (
+        "components/fair-autoresolve",
+        "installers/macos",
+    ),
     "WW0-Minor-Naval-Parity": SHARED
     + (
         "components/minor-naval-parity",

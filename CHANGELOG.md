@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added an optional fair auto-resolve component that neutralizes only the two
+  hidden Very Hard AI strength bonuses used by automatic land and naval battle
+  resolution.
+
 ## 1.1.0 - 2026-07-20
 
 - Added university-tier chances for newly generated minister candidates to gain

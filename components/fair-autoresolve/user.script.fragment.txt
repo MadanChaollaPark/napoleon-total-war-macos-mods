@@ -1,0 +1,3 @@
+# BEGIN NTW-MACOS-MODS: fair-autoresolve
+mod "NTW_Fair_Very_Hard_Autoresolve.pack";
+# END NTW-MACOS-MODS: fair-autoresolve

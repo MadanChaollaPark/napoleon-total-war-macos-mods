@@ -88,6 +88,18 @@ Backups and manifests:
 ~/Library/Application Support/Napoleon Total War macOS Mods/
 ```
 
+## Optional fair Very Hard auto-resolve
+
+To keep Very Hard campaign and manual battles while removing its hidden AI
+strength bonuses from automatic battle resolution, run:
+
+```bash
+components/fair-autoresolve/INSTALL.command
+```
+
+This optional component affects both land and naval auto-resolve. It does not
+change unit statistics or any manually fought battle.
+
 ## Custom locations
 
 Use `--app`, `--support`, and `--state`, or set `NTW_APP_PATH`,

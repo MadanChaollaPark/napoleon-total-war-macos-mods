@@ -16,6 +16,7 @@
 | Ottoman naval parity | No | Yes | Yes | No; reload the save/game |
 | Middle Eastern agent parity | No | Yes | Yes | Base-cap portion does |
 | University minister candidates | Yes | Yes | Yes | No; new candidates only |
+| Fair Very Hard auto-resolve | Yes | Yes | Yes | No; restart and reload |
 | WW0 agent-cap startpos delta | No | Exact WW0 build only | Yes | Yes |
 | Minor naval parity | No | Yes | Yes | No; reload the save/game |
 | Basic Howitzer parity | No | Yes | Yes | No; reload the save/game |

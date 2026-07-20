@@ -38,6 +38,7 @@ MINOR_NAVAL_PACK_HASH = "beae236d8621aab0fdbef95d15ecf05e30235e269a254d52b831c34
 BASIC_HOWITZER_PACK_HASH = "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44"
 EXPERIMENTAL_HOWITZER_PACK_HASH = "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d"
 ROCKET_PACK_HASH = "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a"
+FAIR_AUTORESOLVE_PACK_HASH = "060b90d40dcccbea2922536cf19b5d3eb13759be9ac007997cdad98a71849f85"
 RADIOUS_PACK_HASH = "55a98db54f04d47c05953a335b69706481a31290c171ba4e8de8776743eeded7"
 
 PACK_HASHES = {
@@ -48,6 +49,7 @@ PACK_HASHES = {
     "basic-howitzers": BASIC_HOWITZER_PACK_HASH,
     "experimental-howitzers": EXPERIMENTAL_HOWITZER_PACK_HASH,
     "rockets": ROCKET_PACK_HASH,
+    "fair-autoresolve": FAIR_AUTORESOLVE_PACK_HASH,
 }
 
 COMPONENT_ORDER = (
@@ -60,6 +62,7 @@ COMPONENT_ORDER = (
     "basic-howitzers",
     "experimental-howitzers",
     "rockets",
+    "fair-autoresolve",
     "startpos",
 )
 SCRIPT_COMPONENTS = frozenset(("radious", "unlock", *PACK_HASHES))
@@ -103,6 +106,8 @@ def component_artifacts() -> dict[str, Path]:
         / "components/experimental-howitzer-parity/WW0_Experimental_Howitzer_Parity.pack",
         "rockets": REPO_ROOT
         / "components/rocket-corps-parity/WW0_Rocket_Corps_Parity.pack",
+        "fair-autoresolve": REPO_ROOT
+        / "components/fair-autoresolve/NTW_Fair_Very_Hard_Autoresolve.pack",
         "startpos": REPO_ROOT
         / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff",
         "startpos_upgrade": REPO_ROOT
@@ -121,6 +126,7 @@ def target_paths(app: Path, support: Path) -> dict[str, Path]:
         "basic-howitzers": vfs / "WW0_Basic_Howitzer_Parity.pack",
         "experimental-howitzers": vfs / "WW0_Experimental_Howitzer_Parity.pack",
         "rockets": vfs / "WW0_Rocket_Corps_Parity.pack",
+        "fair-autoresolve": vfs / "NTW_Fair_Very_Hard_Autoresolve.pack",
         "radious": vfs / "Radious_CampaignAI.pack",
         "startpos": app
         / "Contents/Resources/Data/Data/campaigns/ww0_europe/startpos.esf",
@@ -155,6 +161,7 @@ def fragment_body(component: str) -> list[str]:
         "basic-howitzers": "components/basic-howitzer-parity/user.script.fragment.txt",
         "experimental-howitzers": "components/experimental-howitzer-parity/user.script.fragment.txt",
         "rockets": "components/rocket-corps-parity/user.script.fragment.txt",
+        "fair-autoresolve": "components/fair-autoresolve/user.script.fragment.txt",
         "radious": "components/radious-compatibility/user.script.fragment.txt",
     }
     if component not in fragments:
