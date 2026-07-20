@@ -5,6 +5,7 @@ from collections import Counter
 import hashlib
 from pathlib import Path
 import runpy
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -31,6 +32,7 @@ class ArtifactTests(unittest.TestCase):
             ROOT / "components/basic-howitzer-parity/WW0_Basic_Howitzer_Parity.pack": "268ac5222d1713bf54667d228515e96ced7c42b773d2859909ee19125ce2fb44",
             ROOT / "components/experimental-howitzer-parity/WW0_Experimental_Howitzer_Parity.pack": "3d30b0054c13dd7255b0c7b712991bffc66f0a167eb8ba6e26e9092883708c0d",
             ROOT / "components/rocket-corps-parity/WW0_Rocket_Corps_Parity.pack": "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a",
+            ROOT / "components/fair-autoresolve/NTW_Fair_Very_Hard_Autoresolve.pack": "060b90d40dcccbea2922536cf19b5d3eb13759be9ac007997cdad98a71849f85",
             ROOT / "components/ww0-agent-cap-startpos/ww0_europe_agent_caps.bsdiff": "faa5903265d5308b2a212a6073bbec8b9fb76d77b04e938d157d35521a484ede",
             ROOT / "components/ww0-agent-cap-startpos/ww0_italian_agent_caps_upgrade.bsdiff": "9f7110e56b85cadbf8c794d1a05f3d4d9adb90c44693f104cb14187ae304ab3b",
         }
@@ -116,6 +118,58 @@ class ArtifactTests(unittest.TestCase):
             self.assertEqual(patch.read_bytes()[:8], b"BSDIFF40")
             self.assertLess(patch.stat().st_size, 200_000)
 
+    def test_fair_autoresolve_pack_source_and_semantics(self) -> None:
+        component = ROOT / "components/fair-autoresolve"
+        builder = component / "source/build_pack.py"
+        tracked = component / "NTW_Fair_Very_Hard_Autoresolve.pack"
+        source = runpy.run_path(str(builder))
+
+        self.assertEqual(
+            source["ROWS"],
+            (
+                ("autoresolve_very_hard_campaign_AI_percent_increase", 0.0),
+                ("autoresolve_very_hard_difficulty_AI_advantage", 0.0),
+            ),
+        )
+        with tempfile.TemporaryDirectory() as temp:
+            rebuilt = Path(temp) / tracked.name
+            result = subprocess.run(
+                ["python3", str(builder), "--output", str(rebuilt)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(rebuilt.read_bytes(), tracked.read_bytes())
+
+        payload = tracked.read_bytes()
+        self.assertEqual(payload[:4], b"PFH0")
+        _flags, _packs, packs_size, file_count, index_size = struct.unpack_from(
+            "<IIIII", payload, 4
+        )
+        self.assertEqual(file_count, 1)
+        cursor = 24 + packs_size
+        table_size = struct.unpack_from("<I", payload, cursor)[0]
+        cursor += 4
+        end = payload.index(0, cursor)
+        path = payload[cursor:end].decode().replace("\\", "/")
+        self.assertEqual(path, source["TABLE_PATH"])
+        table = payload[24 + packs_size + index_size :]
+        self.assertEqual(len(table), table_size)
+        self.assertEqual(table[:5], struct.pack("<?I", True, 2))
+        cursor = 5
+        rows = []
+        for _ in range(2):
+            length = struct.unpack_from("<H", table, cursor)[0]
+            cursor += 2
+            key = table[cursor : cursor + length * 2].decode("utf-16le")
+            cursor += length * 2
+            value = struct.unpack_from("<f", table, cursor)[0]
+            cursor += 4
+            rows.append((key, value))
+        self.assertEqual(tuple(rows), source["ROWS"])
+        self.assertEqual(cursor, len(table))
+
     def test_new_component_faction_manifests(self) -> None:
         expected = {
             ROOT / "components/basic-howitzer-parity/source/factions.txt": 4,
@@ -165,6 +219,7 @@ class TransactionTests(unittest.TestCase):
                 'mod "Unrelated.pack";\n'
                 'mod "WW0_Ottoman_Naval_Parity.pack";\n'
                 'mod "WW0_University_Minister_Candidates.pack";\n'
+                'mod "NTW_Fair_Very_Hard_Autoresolve.pack";\n'
                 'unlock_faction faction_ottomans;\n'
             ).encode("utf-16le")
             script.write_bytes(original)
@@ -179,6 +234,7 @@ class TransactionTests(unittest.TestCase):
                 "basic-howitzers",
                 "experimental-howitzers",
                 "rockets",
+                "fair-autoresolve",
             )
             self.run_manager(*common, "install", "--components", *selected)
 
@@ -189,6 +245,7 @@ class TransactionTests(unittest.TestCase):
             self.assertIn('mod "Unrelated.pack";', text)
             self.assertEqual(text.count('mod "WW0_Ottoman_Naval_Parity.pack";'), 1)
             self.assertEqual(text.count('mod "WW0_University_Minister_Candidates.pack";'), 1)
+            self.assertEqual(text.count('mod "NTW_Fair_Very_Hard_Autoresolve.pack";'), 1)
             self.assertEqual(text.count("unlock_faction faction_ottomans;"), 1)
             for marker in selected:
                 self.assertEqual(text.count(f"# BEGIN NTW-MACOS-MODS: {marker}"), 1)
@@ -222,6 +279,10 @@ class TransactionTests(unittest.TestCase):
                 sha256(vfs / "WW0_Rocket_Corps_Parity.pack"),
                 "2fd7eba010fe7254af0d9c7f1d9f0b3fa068f0a993ca2bfc3243fb4fec9e7b5a",
             )
+            self.assertEqual(
+                sha256(vfs / "NTW_Fair_Very_Hard_Autoresolve.pack"),
+                "060b90d40dcccbea2922536cf19b5d3eb13759be9ac007997cdad98a71849f85",
+            )
 
             self.run_manager(*common, "rollback")
             self.assertEqual(script.read_bytes(), original)
@@ -232,6 +293,7 @@ class TransactionTests(unittest.TestCase):
             self.assertFalse((vfs / "WW0_Basic_Howitzer_Parity.pack").exists())
             self.assertFalse((vfs / "WW0_Experimental_Howitzer_Parity.pack").exists())
             self.assertFalse((vfs / "WW0_Rocket_Corps_Parity.pack").exists())
+            self.assertFalse((vfs / "NTW_Fair_Very_Hard_Autoresolve.pack").exists())
 
     def test_unknown_existing_pack_is_not_overwritten(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -273,6 +335,32 @@ class TransactionTests(unittest.TestCase):
                 "install",
                 "--components",
                 "university",
+                expect=2,
+            )
+            self.assertIn("Unknown existing pack", result.stderr)
+            self.assertEqual(target.read_bytes(), b"unknown")
+            self.assertFalse((root / "state").exists())
+
+    def test_unknown_existing_fair_autoresolve_pack_is_not_overwritten(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            support = root / "support"
+            target = (
+                support
+                / "VFS/Local/Napoleon Total War/data/NTW_Fair_Very_Hard_Autoresolve.pack"
+            )
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b"unknown")
+            result = self.run_manager(
+                "--app",
+                str(root / "app"),
+                "--support",
+                str(support),
+                "--state",
+                str(root / "state"),
+                "install",
+                "--components",
+                "fair-autoresolve",
                 expect=2,
             )
             self.assertIn("Unknown existing pack", result.stderr)

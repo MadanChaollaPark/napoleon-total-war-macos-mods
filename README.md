@@ -12,6 +12,7 @@ agent behavior for factions made playable by World War zerO.
 | [Ottoman naval parity](components/ottoman-naval-parity/) | Enables five researched late-game Ottoman ships, including Ironclads | Yes |
 | [Middle Eastern agent parity](components/middle-eastern-agent-parity/) | Mirrors normal building/research benefits to Eastern Scholars and Assassins | Yes |
 | [University minister candidates](components/university-minister-candidates/) | Gives newly generated candidates a tier-scaled chance of +1 Management | Yes |
+| [Fair Very Hard auto-resolve](components/fair-autoresolve/) | Removes only the hidden Very Hard AI bonuses from automatic battle resolution | Yes |
 | [WW0 agent-cap startpos](components/ww0-agent-cap-startpos/) | Corrects Ottoman, Crimean and three Italian base-cap records for new campaigns | Yes |
 | [Minor naval parity](components/minor-naval-parity/) | Repairs special-roster late ships and Spain's steam drydock | Yes |
 | [Basic Howitzer parity](components/basic-howitzer-parity/) | Gives Spain, Portugal, Switzerland and Crimea an ordinary Howitzer | Yes |
@@ -37,6 +38,10 @@ use `INSTALL_ALL_WITH_RADIOUS.command` instead.
 The university minister component is an optional gameplay change and is not
 enabled by either complete-suite command. Install it separately with
 `components/university-minister-candidates/INSTALL.command`.
+
+The fair auto-resolve component is also optional. Install it separately with
+`components/fair-autoresolve/INSTALL.command`; it affects land and naval
+auto-resolve but does not reduce manual battle or campaign difficulty.
 
 Run `STATUS.command` for a read-only report. Run `ROLLBACK_LAST.command` to
 restore the exact pre-install script, packs, and startpos from checksummed

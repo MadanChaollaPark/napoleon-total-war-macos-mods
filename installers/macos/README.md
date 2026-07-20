@@ -23,6 +23,11 @@ The university candidate component is an optional gameplay change and is not
 enabled by the two `INSTALL_ALL` launchers. Install it separately with its
 component launcher or `--components university`.
 
+The fair Very Hard auto-resolve component is also optional and excluded from
+both `INSTALL_ALL` launchers. It removes only the hidden AI modifiers from land
+and naval auto-resolve; install it with its component launcher or
+`--components fair-autoresolve`.
+
 ## Individual components
 
 Run from this directory:
@@ -36,6 +41,7 @@ python3 mod_manager.py install --components minor-naval
 python3 mod_manager.py install --components basic-howitzers
 python3 mod_manager.py install --components experimental-howitzers
 python3 mod_manager.py install --components rockets
+python3 mod_manager.py install --components fair-autoresolve
 python3 mod_manager.py install --components startpos
 python3 mod_manager.py install --components radious
 ```
