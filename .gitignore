@@ -5,6 +5,7 @@ __pycache__/
 *.rar
 *.7z
 *.zip
+dist/
 backups/
 original/
 startpos.esf

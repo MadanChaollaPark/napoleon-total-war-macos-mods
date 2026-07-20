@@ -1,0 +1,20 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 tools/build_release.py 0.0.0-ci --output "${RUNNER_TEMP}/release"
+
